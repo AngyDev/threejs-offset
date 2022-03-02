@@ -5,7 +5,8 @@ import { STLLoader } from "https://threejsfundamentals.org/threejs/resources/thr
 import { VertexNormalsHelper } from "https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/helpers/VertexNormalsHelper.js";
 
 let renderer, scene;
-function initDisplay() {
+
+function init() {
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setClearColor(0xf0f0f0);
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -47,7 +48,7 @@ function initDisplay() {
   render();
 }
 
-initDisplay();
+init();
 
 let currentGeometry;
 let mesh;
@@ -94,7 +95,6 @@ const processGeometry = (geometry) => {
   const vertices = geometry.attributes.position.array;
 
   const normals = geometry.attributes.normal.array;
-  const nNormals = geometry.attributes.normal.count;
 
   const position = new Float32Array(vertices.length * 3);
 
