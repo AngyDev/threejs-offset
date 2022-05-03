@@ -2,7 +2,6 @@ import * as THREE from "https://threejsfundamentals.org/threejs/resources/threej
 
 import { TrackballControls } from "https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/controls/TrackballControls.js";
 import { STLLoader } from "https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/loaders/STLLoader.js";
-import { VertexNormalsHelper } from "https://threejsfundamentals.org/threejs/resources/threejs/r127/examples/jsm/helpers/VertexNormalsHelper.js";
 
 let renderer, scene;
 
