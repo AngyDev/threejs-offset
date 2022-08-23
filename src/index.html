@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Offset</title>
+  </head>
+  <body>
+    <span id="forkongithub">
+      <a href="https://github.com/AngyDev/threejs-offset">Fork me on GitHub</a>
+    </span>
+    <div class="header">
+      <div class="input_container">
+        <div>
+          <div class="input_box">
+            <b class="input_label">Load STL:</b>
+            <input id="file" type="file" />
+          </div>
+          <div class="input_box">
+            <b class="input_label">Offset:</b>
+            <input id="offset" type="number" step="any" value="2" />
+            <div class="btn">
+              <button type="button" id="meshOffset">Mesh Offset</button>
+            </div>
+            <div class="btn">
+              <button type="button" id="pointOffset">Point Offset</button>
+            </div>
+          </div>
+        </div>
+        <div class="btn">
+          <button type="button" id="clearScene">Clear Scene</button>
+        </div>
+        <!-- <div class="loader" id="loading"></div> -->
+      </div>
+    </div>
+  </body>
+</html>
