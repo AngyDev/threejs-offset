@@ -11,6 +11,7 @@ https://threejs-offset.netlify.app/
     - [Demo](#demo)
   - [Table of Contents](#table-of-contents)
   - [General info](#general-info)
+  - [Issues](#issues)
   - [Setup](#setup)
 
 ## General info
@@ -33,6 +34,12 @@ A mesh has a geometry with a list of vertices and normals. We want to get the fa
 6. Adds the new position in the correct position of the new object (this is a clone of the initial object)
 7. At the end calculates the new normals with the new positions and completes the new object
 8. Creates a mesh from the new objects 
+
+## Issues 
+- The process can be slow when trying to load relatively complex models with a lot of faces. If you want, you can move the files `offsetObjectHash` and `hashTable` to a node.js server.
+- The process does not work in some cases, for example, with a sphere. I'm working on it. If you have some ideas on how to improve it, please open an issue, I appreciate that.
+
+
 ## Setup
 
 If you want to start the application locally:
