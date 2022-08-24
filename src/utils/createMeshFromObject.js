@@ -11,6 +11,8 @@ export const createMeshFromObject = (object) =>
     const geometry = new THREE.BufferGeometry();
     const material = new THREE.MeshStandardMaterial({
       color: "#0000ff",
+      opacity: 0.2, 
+      transparent: true,
       side: THREE.DoubleSide,
       vertexColors: true,
       wireframe: true
