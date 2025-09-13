@@ -5,14 +5,16 @@ const CopyWebpackPlugin = require("copy-webpack-plugin")
 
 module.exports = {
   entry: "./demo/index.js",
-
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "main.js",
   },
-
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+    },
+  },
   mode: "development",
-
   module: {
     rules: [
       {
