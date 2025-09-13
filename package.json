@@ -1,8 +1,11 @@
 {
   "name": "threejs-offset",
-  "version": "1.0.0",
-  "description": "Create an offset set of points from an STL file using the [three.js](https://threejs.org/) library",
-  "main": "index.js",
+  "version": "0.1.0",
+  "description": "Offset meshes with [three.js](https://threejs.org/) library",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "start": "webpack serve --open"
@@ -11,9 +14,15 @@
     "type": "git",
     "url": "git+https://github.com/AngyDev/threejs-offset.git"
   },
-  "keywords": [],
+  "keywords": [
+    "three.js",
+    "geometry",
+    "3d",
+    "mesh",
+    "offset"
+  ],
   "author": "Angela Busato",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/AngyDev/threejs-offset/issues"
   },
