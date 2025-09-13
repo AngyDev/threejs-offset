@@ -7,8 +7,6 @@ import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js"
 
 let renderer, scene
 
-const canvas = document.querySelector("canvas.webgl")
-
 function init() {
   const sizes = {
     width: window.innerWidth,
@@ -83,7 +81,6 @@ let mesh
 const offsetElement = document.getElementById("offset")
 const btnMeshOffset = document.getElementById("meshOffset")
 const btnPointOffset = document.getElementById("pointOffset")
-const loading = document.getElementById("loading")
 
 btnMeshOffset.addEventListener("click", async (e) => {
   e.preventDefault()
