@@ -1,10 +1,10 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require("path")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const CopyWebpackPlugin = require("copy-webpack-plugin")
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./demo/index.js",
 
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -44,7 +44,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/index.html",
+      template: "./demo/index.html",
       inject: "body",
     }),
     new MiniCssExtractPlugin({
@@ -54,4 +54,4 @@ module.exports = {
     //   patterns: [{ from: path.resolve(__dirname, "./src/assets"), to: "./assets" }],
     // }),
   ],
-};
+}
