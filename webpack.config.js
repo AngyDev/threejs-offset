@@ -1,9 +1,25 @@
 const path = require("path")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const CopyWebpackPlugin = require("copy-webpack-plugin")
 
-module.exports = {
+const rules = [
+  {
+    test: /\.js$/,
+    exclude: /(node_modules)/,
+    use: {
+      loader: "babel-loader",
+      options: {
+        presets: ["@babel/preset-env"],
+      },
+    },
+  },
+  {
+    test: /\.css$/,
+    use: [MiniCssExtractPlugin.loader, "css-loader"],
+  },
+]
+
+const demoConfig = {
   entry: "./demo/index.js",
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -15,35 +31,7 @@ module.exports = {
     },
   },
   mode: "development",
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /(node_modules)/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-env"],
-          },
-        },
-      },
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader"],
-      },
-      // {
-      //   test: /\.(png|jpe?g|gif|svg)$/,
-      //   use: [
-      //     {
-      //       loader: "file-loader",
-      //       options: {
-      //         outputPath: "assets/images/",
-      //       },
-      //     },
-      //   ],
-      // },
-    ],
-  },
+  module: { rules },
   plugins: [
     new HtmlWebpackPlugin({
       template: "./demo/index.html",
@@ -52,8 +40,36 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "main.css",
     }),
-    // new CopyWebpackPlugin({
-    //   patterns: [{ from: path.resolve(__dirname, "./src/assets"), to: "./assets" }],
-    // }),
   ],
+  devServer: {
+    static: path.join(__dirname, "dist"),
+    compress: true,
+    port: 9000,
+  },
 }
+
+const libraryConfig = {
+  entry: "./src/index.js",
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "index.js",
+    library: {
+      name: "threejsOffset",
+      type: "umd",
+    },
+    clean: true,
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+    },
+  },
+  mode: "production",
+  module: { rules },
+  externals: {
+    three: "three", // Exclude 'three' from the bundle because can happen the user has already threejs in his project
+  },
+  plugins: [],
+}
+
+module.exports = [demoConfig, libraryConfig]
