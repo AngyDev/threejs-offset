@@ -22,7 +22,7 @@ const rules = [
 const demoConfig = {
   entry: "./demo/index.js",
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "dist/demo"),
     filename: "main.js",
   },
   resolve: {
@@ -36,13 +36,14 @@ const demoConfig = {
     new HtmlWebpackPlugin({
       template: "./demo/index.html",
       inject: "body",
+      filename: "index.html",
     }),
     new MiniCssExtractPlugin({
       filename: "main.css",
     }),
   ],
   devServer: {
-    static: path.join(__dirname, "dist"),
+    static: path.join(__dirname, "dist/demo"),
     compress: true,
     port: 9000,
   },
@@ -51,7 +52,7 @@ const demoConfig = {
 const libraryConfig = {
   entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "dist/lib"),
     filename: "index.js",
     library: {
       name: "threejsOffset",

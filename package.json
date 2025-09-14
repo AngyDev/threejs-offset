@@ -7,8 +7,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "start": "webpack serve --open"
+    "start": "webpack serve --open",
+    "build:demo": "webpack --config webpack.config.js --env demo",
+    "build:lib": "webpack --config webpack.config.js --env lib",
+    "build": "npm run build:demo && npm run build:lib"
   },
   "repository": {
     "type": "git",
