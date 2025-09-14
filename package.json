@@ -2,9 +2,9 @@
   "name": "threejs-offset",
   "version": "0.1.0",
   "description": "Offset meshes with [three.js](https://threejs.org/) library",
-  "main": "dist/index.js",
+  "main": "dist/lib/index.js",
   "files": [
-    "dist"
+    "dist/lib"
   ],
   "scripts": {
     "start": "webpack serve --open",
