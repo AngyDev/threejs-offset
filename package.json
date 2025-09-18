@@ -37,6 +37,9 @@
     "url": "https://github.com/AngyDev/threejs-offset/issues"
   },
   "homepage": "https://github.com/AngyDev/threejs-offset#readme",
+  "engines": {
+    "node": ">=18"
+  },
   "devDependencies": {
     "vite": "^5.0.0",
     "three": "^0.143.0"
