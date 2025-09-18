@@ -7,6 +7,12 @@
   "files": [
     "dist/lib"
   ],
+  "exports": {
+    ".": {
+      "import": "./lib/index.es.js",
+      "require": "./lib/index.umd.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build:demo": "vite build --mode demo",
