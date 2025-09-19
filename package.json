@@ -1,6 +1,6 @@
 {
   "name": "threejs-offset",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Offset meshes with [three.js](https://threejs.org/) library",
   "main": "dist/lib/index.umd.js",
   "module": "dist/lib/index.es.js",
