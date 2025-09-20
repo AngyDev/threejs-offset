@@ -1,7 +1,7 @@
 import * as THREE from "three"
 import { STLExporter } from "three/examples/jsm/exporters/STLExporter.js"
-import { createMeshFromObject } from "./utils/createMeshFromObject.js"
-import { createOffsetMesh } from "./utils/offsetObjectHash.js"
+import { createMeshFromObject } from "./utils/createMeshFromObject"
+import { createOffsetMesh } from "./utils/offsetObjectHash"
 
 /**
  * Creates a mesh with the offset passed
