@@ -1,5 +1,6 @@
 import { defineConfig } from "vite"
 import path from "path"
+import dts from "vite-plugin-dts"
 
 export default defineConfig(({ command, mode }) => {
   if (mode === "demo" || command === "serve") {
@@ -25,9 +26,15 @@ export default defineConfig(({ command, mode }) => {
           "@": path.resolve(__dirname, "src"),
         },
       },
+      plugins: [
+        dts({
+          insertTypesEntry: true,
+          rollupTypes: true,
+        }),
+      ],
       build: {
         lib: {
-          entry: path.resolve(__dirname, "src/index.js"),
+          entry: path.resolve(__dirname, "src/index.ts"),
           name: "threejsOffset",
           fileName: (format) => `index.${format}.js`,
           formats: ["es", "umd"],
