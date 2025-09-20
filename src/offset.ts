@@ -8,7 +8,7 @@ import { createOffsetMesh } from "./utils/offsetObjectHash"
  * @param {THREE.Mesh} meshToOffset The mesh that the user added to the scene
  * @param {Number} offset The offset passed
  */
-export async function applyOffset(meshToOffset, offset) {
+export async function applyOffset(meshToOffset: THREE.Mesh, offset: number) {
   console.time()
 
   // 1. Export mesh as an ascii file
@@ -31,7 +31,7 @@ export async function applyOffset(meshToOffset, offset) {
  * @param {THREE.BufferGeometry} geometry
  * @param {Number} offset
  */
-export function processGeometry(geometry, offset) {
+export function processGeometry(geometry: THREE.BufferGeometry, offset: number) {
   const vertices = geometry.attributes.position.array
   const normals = geometry.attributes.normal.array
   const position = new Float32Array(vertices.length * 3)
