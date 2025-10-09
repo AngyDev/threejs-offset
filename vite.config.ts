@@ -1,10 +1,14 @@
-import { defineConfig } from "vite"
-import path from "path"
-import dts from "vite-plugin-dts"
+import { defineConfig } from "vite";
+import path from "node:path";
+import dts from "vite-plugin-dts";
 
 export default defineConfig(({ command, mode }) => {
+  console.log(`Command: ${command}, Mode: ${mode}`);
   if (mode === "demo" || command === "serve") {
     return {
+      test: {
+        root: "./src",
+      },
       root: "demo",
       resolve: {
         alias: {
@@ -18,7 +22,7 @@ export default defineConfig(({ command, mode }) => {
       server: {
         port: 9000,
       },
-    }
+    };
   } else {
     return {
       resolve: {
@@ -50,6 +54,6 @@ export default defineConfig(({ command, mode }) => {
         outDir: path.resolve(__dirname, "dist/lib"),
         emptyOutDir: true,
       },
-    }
+    };
   }
-})
+});
