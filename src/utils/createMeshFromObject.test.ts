@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import { describe, it, expect, beforeEach, vi } from "vitest";
 import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils";
-import { createMeshFromObject } from "./createMeshFromObject";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { InitialObject } from "@/types";
+import { createMeshFromObject } from "./createMeshFromObject";
 
 vi.mock("three/examples/jsm/utils/BufferGeometryUtils", () => ({
   mergeVertices: vi.fn((geometry) => geometry),
@@ -64,16 +64,48 @@ describe("createMeshFromObject", () => {
 
     expect(positions).toEqual(
       new Float32Array([
-        0, 0, 0, 1, 0, 0, 0, 1, 0, // First object
-        0, 1, 0, 1, 1, 0, 0, 2, 0, // Second object
-      ])
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0, // First object
+        0,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        2,
+        0, // Second object
+      ]),
     );
 
     expect(normals).toEqual(
       new Float32Array([
-        0, 0, 1, 0, 0, 1, 0, 0, 1, // First object
-        0, 0, 1, 0, 0, 1, 0, 0, 1, // Second object
-      ])
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1, // First object
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1, // Second object
+      ]),
     );
   });
 
@@ -82,6 +114,8 @@ describe("createMeshFromObject", () => {
     const geometry = mesh.geometry as THREE.BufferGeometry;
 
     const colors = geometry.attributes.color.array;
-    expect(colors).toEqual(new Uint8Array([255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]));
+    expect(colors).toEqual(
+      new Uint8Array([255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]),
+    );
   });
 });

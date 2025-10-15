@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { HashTable } from "./hashTable";
 
 describe("HashTable", () => {
@@ -11,7 +11,7 @@ describe("HashTable", () => {
   it("initializes with correct length and size", () => {
     expect(table.data.length).toBe(5);
     expect(table.size).toBe(0);
-    expect(table.data.every(b => b === undefined)).toBe(true);
+    expect(table.data.every((b) => b === undefined)).toBe(true);
   });
 
   it("adds a new key and stores value array", () => {
@@ -53,7 +53,7 @@ describe("HashTable", () => {
     // Could be same hash or different; count total size instead
     expect(table.size).toBe(2);
     const flatEntries = table.data.filter(Boolean).flat();
-    const values = flatEntries.map(e => e[1]);
+    const values = flatEntries.map((e) => e[1]);
     expect(values).toContainEqual(["first"]);
     expect(values).toContainEqual(["second"]);
   });
@@ -66,8 +66,8 @@ describe("HashTable", () => {
     expect(idx).toBe(table.hash("ba"));
     const bucket = table.data[idx]!;
     expect(bucket.length).toBe(2);
-    const entryAb = bucket.find(e => e[0] === "ab")!;
-    const entryBa = bucket.find(e => e[0] === "ba")!;
+    const entryAb = bucket.find((e) => e[0] === "ab")!;
+    const entryBa = bucket.find((e) => e[0] === "ba")!;
     expect(entryAb[1]).toEqual([1]);
     expect(entryBa[1]).toEqual([2]);
     expect(table.size).toBe(2);
@@ -104,8 +104,6 @@ describe("HashTable", () => {
       expect(bucketA.length).toBe(1);
       expect(bucketB.length).toBe(1);
     }
-    expect(table.size).toBe(
-      sameBucket ? 2 : 2
-    );
+    expect(table.size).toBe(sameBucket ? 2 : 2);
   });
 });
