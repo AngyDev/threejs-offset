@@ -46,12 +46,12 @@
     "node": ">=20"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.4",
-    "@types/node": "^24.6.1",
+    "@biomejs/biome": "2.2.6",
+    "@types/node": "^24.7.2",
     "@types/three": "^0.180.0",
     "three": "^0.180.0",
-    "typescript": "^5.9.2",
-    "vite": "^5.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.10",
     "vite-plugin-dts": "^4.5.4",
     "vitest": "^3.2.4"
   },
