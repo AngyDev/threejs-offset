@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { InitialObject } from "@/types";
+import type { VertexUsageInfo } from "@/types";
 import { createMeshFromObject } from "./createMeshFromObject";
 
 vi.mock("three/examples/jsm/utils/BufferGeometryUtils", () => ({
@@ -9,7 +9,7 @@ vi.mock("three/examples/jsm/utils/BufferGeometryUtils", () => ({
 }));
 
 describe("createMeshFromObject", () => {
-  let mockObject: InitialObject[];
+  let mockObject: Pick<VertexUsageInfo, "face" | "normal" | "vertices">[];
 
   beforeEach(() => {
     mockObject = [

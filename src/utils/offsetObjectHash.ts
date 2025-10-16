@@ -1,4 +1,4 @@
-import type { InitialObject, VertexUsageInfo } from "@/types";
+import type { VertexUsageInfo } from "@/types";
 import { HashTable } from "./hashTable";
 
 /**
@@ -7,7 +7,10 @@ import { HashTable } from "./hashTable";
  * @param {Number} offset The offset number to offset the mesh
  * @returns The new object with the offset
  */
-export const createOffsetMesh = (data: string, offset: number): InitialObject[] => {
+export const createOffsetMesh = (
+  data: string,
+  offset: number,
+): Pick<VertexUsageInfo, "face" | "normal" | "vertices">[] => {
   const initialObjects = parseASCII(data);
 
   const hashTable = createHashTableWithObject(initialObjects);
@@ -30,37 +33,39 @@ export const createOffsetMesh = (data: string, offset: number): InitialObject[] 
  * @param {String} data The content of the file
  * @returns The content of the file in an array of objects
  */
-const parseASCII = (data: string): InitialObject[] => {
+const parseASCII = (data: string): Pick<VertexUsageInfo, "face" | "normal" | "vertices">[] => {
   const patternSolid = /solid([\s\S]*?)endsolid/g;
   const patternFace = /facet([\s\S]*?)endfacet/g;
 
   const patternFloat = /[\s]+([+-]?(?:\d*)(?:\.\d*)?(?:[eE][+-]?\d+)?)/.source;
   const patternVertex = new RegExp(`vertex${patternFloat}${patternFloat}${patternFloat}`, "g");
   const patternNormal = new RegExp(`normal${patternFloat}${patternFloat}${patternFloat}`, "g");
-
-  let result: RegExpExecArray | null;
   const initialObjects = [];
 
-  result = patternSolid.exec(data);
+  let result: RegExpExecArray | null = patternSolid.exec(data);
+
   while (result !== null) {
     const solid = result[0];
-    let faceNumber = 0;
 
+    let faceNumber = 0;
     let faceResult = patternFace.exec(solid);
+
     while (faceResult !== null) {
       const text = faceResult[0];
-
-      faceNumber++;
       const normalV: number[] = [];
       const verticesV: number[][] = [];
 
       let normalResult = patternNormal.exec(text);
+
+      faceNumber++;
+
       while (normalResult !== null) {
         normalV.push(parseFloat(normalResult[1]), parseFloat(normalResult[2]), parseFloat(normalResult[3]));
         normalResult = patternNormal.exec(text);
       }
 
       let vertexResult = patternVertex.exec(text);
+
       while (vertexResult !== null) {
         const verticesXYZ: number[] = [
           parseFloat(vertexResult[1]),
@@ -78,11 +83,13 @@ const parseASCII = (data: string): InitialObject[] => {
       };
 
       initialObjects.push(initialObject);
+
       faceResult = patternFace.exec(solid);
     }
 
     result = patternSolid.exec(data);
   }
+
   return initialObjects;
 };
 
@@ -91,8 +98,12 @@ const parseASCII = (data: string): InitialObject[] => {
  * @param {Array} initialObjects The data from the file
  * @returns HashTable of objects with the same vertex
  */
-const createHashTableWithObject = (initialObjects: InitialObject[]): HashTable<any, any> => {
-  const hashTable = new HashTable(initialObjects.length);
+const createHashTableWithObject = (
+  initialObjects: Pick<VertexUsageInfo, "face" | "normal" | "vertices">[],
+): HashTable<number[], Pick<VertexUsageInfo, "face" | "normal" | "vertexPositionInTheObject">> => {
+  const hashTable = new HashTable<number[], Pick<VertexUsageInfo, "face" | "normal" | "vertexPositionInTheObject">>(
+    initialObjects.length,
+  );
 
   for (let i = 0; i < initialObjects.length; i++) {
     for (let j = 0; j < initialObjects[i].vertices.length; j++) {
@@ -116,7 +127,11 @@ const createHashTableWithObject = (initialObjects: InitialObject[]): HashTable<a
  * @param {Number} offset The offset to move the mesh
  * @returns The new objects with the offset
  */
-const calcOffset = (hashTable: HashTable<any, any>, newObjects: InitialObject[], offset: number): InitialObject[] => {
+const calcOffset = (
+  hashTable: HashTable<number[], Pick<VertexUsageInfo, "face" | "normal" | "vertexPositionInTheObject">>,
+  newObjects: Pick<VertexUsageInfo, "face" | "normal" | "vertices">[],
+  offset: number,
+): Pick<VertexUsageInfo, "face" | "normal" | "vertices">[] => {
   for (let i = 0; i < hashTable.data.length; i++) {
     if (hashTable.data[i]) {
       for (let j = 0; j < hashTable.data[i].length; j++) {
@@ -142,6 +157,7 @@ const calcOffset = (hashTable: HashTable<any, any>, newObjects: InitialObject[],
 
   newObjects.map((item) => {
     const newNormal = calculateNewNormal(item.vertices[0], item.vertices[1], item.vertices[2]);
+
     return {
       ...item,
       normal: item.normal.push(newNormal[0], newNormal[1], newNormal[2]),
@@ -156,7 +172,9 @@ const calcOffset = (hashTable: HashTable<any, any>, newObjects: InitialObject[],
  * @param {Array} tempList Array of objects with the same vertex
  * @returns The sum of all the normals
  */
-const calcNormalsSum = (tempList: VertexUsageInfo[]): number[] => {
+const calcNormalsSum = (
+  tempList: Pick<VertexUsageInfo, "face" | "normal" | "vertexPositionInTheObject">[],
+): number[] => {
   // const result = tempList.reduce((prev, curr) => prev + curr.normal, 0);
   let sumX = 0;
   let sumY = 0;
