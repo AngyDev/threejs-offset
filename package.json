@@ -16,7 +16,7 @@
     }
   },
   "scripts": {
-    "check": "biome check --write ./src/**/*.ts ./demo/**",
+    "check": "biome check --write ./src/index.ts ./src/**/*.ts ./demo/**",
     "check:ci": "biome check ./src/**/*.ts ./demo/**",
     "test": "vitest",
     "dev": "vite",
