@@ -10,9 +10,9 @@
   ],
   "exports": {
     ".": {
-      "import": "./lib/index.es.js",
-      "require": "./lib/index.umd.js",
-      "types": "./lib/index.d.ts"
+      "types": "./dist/lib/index.d.ts",
+      "import": "./dist/lib/index.es.js",
+      "require": "./dist/lib/index.umd.js"
     }
   },
   "scripts": {
