@@ -16,8 +16,8 @@
     }
   },
   "scripts": {
-    "check": "biome check --write ./src/index.ts ./src/**/*.ts ./demo/**",
-    "check:ci": "biome check ./src/**/*.ts ./demo/**",
+    "check": "biome check --write ./src/index.ts ./src/**/*.ts ./demo/*.ts",
+    "check:ci": "biome check ./src/**/*.ts ./demo/*.ts",
     "test": "vitest --mode test --run",
     "dev": "vite",
     "build:demo": "vite build --mode demo",

@@ -110,7 +110,7 @@ const fileInput = document.getElementById("file") as HTMLInputElement;
 fileInput?.addEventListener("change", (e: Event) => {
   const target = e.target as HTMLInputElement;
   const file = target.files?.[0];
-  
+
   if (!file) return;
 
   const reader = new FileReader();
