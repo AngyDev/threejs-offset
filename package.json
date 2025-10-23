@@ -18,7 +18,7 @@
   "scripts": {
     "check": "biome check --write ./src/index.ts ./src/**/*.ts ./demo/**",
     "check:ci": "biome check ./src/**/*.ts ./demo/**",
-    "test": "vitest",
+    "test": "vitest --mode test --run",
     "dev": "vite",
     "build:demo": "vite build --mode demo",
     "build:lib": "vite build",
@@ -43,17 +43,18 @@
   },
   "homepage": "https://github.com/AngyDev/threejs-offset#readme",
   "engines": {
-    "node": ">=20"
+    "node": ">=25"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.6",
-    "@types/node": "^24.7.2",
+    "@biomejs/biome": "2.2.7",
+    "@types/node": "^24.9.1",
     "@types/three": "^0.180.0",
     "three": "^0.180.0",
     "typescript": "^5.9.3",
-    "vite": "^7.1.10",
+    "vite": "^7.1.12",
     "vite-plugin-dts": "^4.5.4",
-    "vitest": "^3.2.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.0.2"
   },
   "peerDependencies": {
     "three": "^0.143.0"

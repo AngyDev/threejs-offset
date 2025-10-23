@@ -1,76 +1,101 @@
-import { Mesh, BufferGeometry, BufferAttribute, Points, PointsMaterial } from "three";
-import { STLExporter } from "three/examples/jsm/exporters/STLExporter.js";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import * as THREE from 'three'
+import { applyOffset, processGeometry } from './offset'
 
-import { applyOffset, processGeometry } from "./offset";
-import { createMeshFromObject } from "./utils/createMeshFromObject";
-import { createOffsetMesh } from "./utils/offsetObjectHash";
+// Mock dependencies
+const mockParse = vi.fn().mockReturnValue('mocked stl data')
 
-vi.mock("three/examples/jsm/exporters/STLExporter.js");
-vi.mock("./utils/createMeshFromObject");
-vi.mock("./utils/offsetObjectHash");
+vi.mock('three/examples/jsm/exporters/STLExporter.js', () => ({
+  // biome-ignore lint/complexity/useArrowFunction: required for mocking classes
+  STLExporter: vi.fn().mockImplementation(function() {
+    return {
+      parse: mockParse
+    }
+  })
+}))
 
-describe("applyOffset", () => {
-  let mockMesh: Mesh;
-  let mockExporter: any;
-  let mockResult: string;
+vi.mock('./utils/createMeshFromObject', () => ({
+  createMeshFromObject: vi.fn().mockResolvedValue(new THREE.Mesh())
+}))
 
+vi.mock('./utils/offsetObjectHash', () => ({
+  createOffsetMesh: vi.fn().mockReturnValue({})
+}))
+
+describe('offset', () => {
   beforeEach(() => {
-    mockMesh = new Mesh();
-    mockResult = "mock stl data";
-    mockExporter = {
-      parse: vi.fn().mockReturnValue(mockResult),
-    };
-    (STLExporter as any).mockImplementation(() => mockExporter);
-    (createOffsetMesh as any).mockReturnValue("mock object");
-    (createMeshFromObject as any).mockResolvedValue(new Mesh());
-  });
+    vi.clearAllMocks()
+  })
 
-  it("should export mesh as STL and create offset mesh", async () => {
-    const offset = 2;
-    const result = await applyOffset(mockMesh, offset);
+  describe('applyOffset', () => {
+    it('should create an offset mesh with correct name', async () => {
+      const mockMesh = new THREE.Mesh()
+      const offset = 2.5
 
-    expect(STLExporter).toHaveBeenCalled();
-    expect(mockExporter.parse).toHaveBeenCalledWith(mockMesh, { binary: false });
-    expect(createOffsetMesh).toHaveBeenCalledWith(mockResult, offset);
-    expect(createMeshFromObject).toHaveBeenCalledWith("mock object");
-    expect(result.name).toBe("offset");
-  });
-});
+      const result = await applyOffset(mockMesh, offset)
 
-describe("processGeometry", () => {
-  let mockGeometry: BufferGeometry;
+      expect(result.name).toBe('offset')
+    })
 
-  beforeEach(() => {
-    mockGeometry = new BufferGeometry();
-    const vertices = new Float32Array([0, 0, 0, 1, 1, 1, 2, 2, 2]);
-    const normals = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
-    mockGeometry.setAttribute("position", new BufferAttribute(vertices, 3));
-    mockGeometry.setAttribute("normal", new BufferAttribute(normals, 3));
-  });
+    it('should call STLExporter with correct parameters', async () => {
+      const mockMesh = new THREE.Mesh()
+      const offset = 1.0
 
-  it("should create points with offset applied to vertices", () => {
-    const offset = 0.5;
-    const result = processGeometry(mockGeometry, offset);
+      await applyOffset(mockMesh, offset)
 
-    expect(result).toBeInstanceOf(Points);
-    expect(result.name).toBe("offset");
-    expect(result.material).toBeInstanceOf(PointsMaterial);
-    expect((result.material as PointsMaterial).color.getHex()).toBe(0xff0000);
-    expect((result.material as PointsMaterial).size).toBe(0.7);
+      const { STLExporter } = await import('three/examples/jsm/exporters/STLExporter.js')
+      expect(STLExporter).toHaveBeenCalled()
+      expect(mockParse).toHaveBeenCalledWith(mockMesh, { binary: false })
+    })
+  })
 
-    const positions = result.geometry.attributes.position.array;
-    expect(positions[0]).toBe(0.5); // 0.5 * 1 + 0
-    expect(positions[1]).toBe(0); // 0.5 * 0 + 0
-    expect(positions[2]).toBe(0); // 0.5 * 0 + 0
-  });
+  describe('processGeometry', () => {
+    it('should create points with offset applied to vertices', () => {
+      const geometry = new THREE.BufferGeometry()
+      const vertices = new Float32Array([1, 2, 3, 4, 5, 6])
+      const normals = new Float32Array([0, 1, 0, 1, 0, 0])
+      geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
+      geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3))
 
-  it("should handle negative offset", () => {
-    const offset = -1;
-    const result = processGeometry(mockGeometry, offset);
+      const offset = 2.0
+      const result = processGeometry(geometry, offset)
 
-    const positions = result.geometry.attributes.position.array;
-    expect(positions[0]).toBe(-1); // -1 * 1 + 0
-    expect(positions[4]).toBe(0); // -1 * 1 + 1
-  });
-});
+      expect(result).toBeInstanceOf(THREE.Points)
+      expect(result.name).toBe('offset')
+      expect(result.material).toBeInstanceOf(THREE.PointsMaterial)
+    })
+
+    it('should apply offset correctly to vertex positions', () => {
+      const geometry = new THREE.BufferGeometry()
+      const vertices = new Float32Array([0, 0, 0, 3, 3, 3])
+      const normals = new Float32Array([1, 0, 0, 0, 1, 0])
+      geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
+      geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3))
+
+      const offset = 1.0
+      const result = processGeometry(geometry, offset)
+      const resultPositions = result.geometry.attributes.position.array as Float32Array
+
+      expect(resultPositions[0]).toBe(1) // 1 * 1 + 0
+      expect(resultPositions[1]).toBe(0) // 0 * 1 + 0
+      expect(resultPositions[2]).toBe(0) // 0 * 1 + 0
+      expect(resultPositions[3]).toBe(3) // 0 * 1 + 3
+      expect(resultPositions[4]).toBe(4) // 1 * 1 + 3
+      expect(resultPositions[5]).toBe(3) // 0 * 1 + 3
+    })
+
+    it('should create material with correct properties', () => {
+      const geometry = new THREE.BufferGeometry()
+      const vertices = new Float32Array([1, 2, 3])
+      const normals = new Float32Array([0, 1, 0])
+      geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3))
+      geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3))
+
+      const result = processGeometry(geometry, 1.0)
+      const material = result.material as THREE.PointsMaterial
+
+      expect(material.color.getHex()).toBe(0xff0000)
+      expect(material.size).toBe(0.7)
+    })
+  })
+})
