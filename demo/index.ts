@@ -5,7 +5,8 @@ import * as THREE from "three";
 import { TrackballControls } from "three/examples/jsm/controls/TrackballControls.js";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader.js";
 
-let renderer, scene;
+let renderer: THREE.WebGLRenderer;
+let scene: THREE.Scene;
 
 function init() {
   const sizes = {
@@ -35,7 +36,7 @@ function init() {
   // the light follow the camera position
   controls.addEventListener("change", lightUpdate);
 
-  function lightUpdate() {
+  function lightUpdate(): void {
     directionalLight.position.copy(camera.position);
   }
 
@@ -51,7 +52,7 @@ function init() {
   directionalLight.castShadow = true;
   scene.add(directionalLight);
 
-  function onWindowResize() {
+  function onWindowResize(): void {
     // Update sizes
     sizes.width = window.innerWidth;
     sizes.height = window.innerHeight - 100;
@@ -65,7 +66,7 @@ function init() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   }
 
-  function render() {
+  function render(): void {
     requestAnimationFrame(render);
     controls.update();
     renderer.render(scene, camera);
@@ -76,16 +77,16 @@ function init() {
 
 init();
 
-let mesh;
+let mesh: THREE.Mesh | null = null;
 
-const offsetElement = document.getElementById("offset");
-const btnMeshOffset = document.getElementById("meshOffset");
-const btnPointOffset = document.getElementById("pointOffset");
+const offsetElement = document.getElementById("offset") as HTMLInputElement;
+const btnMeshOffset = document.getElementById("meshOffset") as HTMLButtonElement;
+const btnPointOffset = document.getElementById("pointOffset") as HTMLButtonElement;
 
-btnMeshOffset.addEventListener("click", async (e) => {
+btnMeshOffset?.addEventListener("click", async (e: Event) => {
   e.preventDefault();
 
-  const offset = offsetElement.value;
+  const offset = Number(offsetElement?.value || 0);
 
   if (mesh) {
     const meshOffset = await applyOffset(mesh, offset);
@@ -93,10 +94,10 @@ btnMeshOffset.addEventListener("click", async (e) => {
   }
 });
 
-btnPointOffset.addEventListener("click", (e) => {
+btnPointOffset?.addEventListener("click", (e: Event) => {
   e.preventDefault();
 
-  const offset = offsetElement.value;
+  const offset = Number(offsetElement?.value || 0);
 
   if (mesh) {
     const newMesh = processGeometry(mesh.geometry, offset);
@@ -105,23 +106,29 @@ btnPointOffset.addEventListener("click", (e) => {
 });
 
 // Load the file and get the geometry
-document.getElementById("file").onchange = (e) => {
+const fileInput = document.getElementById("file") as HTMLInputElement;
+fileInput?.addEventListener("change", (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  const file = target.files?.[0];
+
+  if (!file) return;
+
   const reader = new FileReader();
 
   reader.onload = () => {
-    const geometry = new STLLoader().parse(reader.result);
-
-    createMeshFromFile(geometry);
+    if (reader.result) {
+      const geometry = new STLLoader().parse(reader.result);
+      createMeshFromFile(geometry);
+    }
   };
 
-  reader.readAsArrayBuffer(e.target.files[0]);
-};
+  reader.readAsArrayBuffer(file);
+});
 
 /**
  * Creates the mesh from the file's geometry
- * @param {THREE.BufferGeometry} geometry
  */
-const createMeshFromFile = (geometry) => {
+const createMeshFromFile = (geometry: THREE.BufferGeometry): void => {
   if (mesh) {
     scene.remove(mesh);
   }
@@ -135,32 +142,36 @@ const createMeshFromFile = (geometry) => {
   scene.add(mesh);
 };
 
-const removeAddOffset = (mesh) => {
-  const offsetMesh = scene.children.filter((item) => item.name === mesh.name);
+const removeAddOffset = (offsetMesh: THREE.Mesh | THREE.Points): void => {
+  const existingMesh = scene.children.filter((item) => item.name === offsetMesh.name);
 
-  if (offsetMesh.length === 0) {
-    scene.add(mesh);
+  if (existingMesh.length === 0) {
+    scene.add(offsetMesh);
   } else {
-    scene.remove(offsetMesh[0]);
-    scene.add(mesh);
+    scene.remove(existingMesh[0]);
+    scene.add(offsetMesh);
   }
 };
 
 // Button to clear the scene
-const btnClearScene = document.getElementById("clearScene");
+const btnClearScene = document.getElementById("clearScene") as HTMLButtonElement;
 
-btnClearScene.addEventListener("click", () => {
+btnClearScene?.addEventListener("click", () => {
   clearScene();
 });
 
-const clearScene = () => {
+const clearScene = (): void => {
   const meshes = scene.children.filter((item) => item.type === "Mesh" || item.type === "Points");
 
   if (meshes.length > 0) {
-    for (const mesh of meshes) {
-      scene.remove(mesh);
+    for (const meshItem of meshes) {
+      scene.remove(meshItem);
     }
 
-    document.getElementById("file").value = "";
+    const fileInput = document.getElementById("file") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
+    }
   }
+  mesh = null;
 };

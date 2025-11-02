@@ -37,30 +37,32 @@ const parseASCII = (data: string): InitialObject[] => {
   const patternFloat = /[\s]+([+-]?(?:\d*)(?:\.\d*)?(?:[eE][+-]?\d+)?)/.source;
   const patternVertex = new RegExp(`vertex${patternFloat}${patternFloat}${patternFloat}`, "g");
   const patternNormal = new RegExp(`normal${patternFloat}${patternFloat}${patternFloat}`, "g");
-
-  let result: RegExpExecArray | null;
   const initialObjects = [];
 
-  result = patternSolid.exec(data);
+  let result: RegExpExecArray | null = patternSolid.exec(data);
+
   while (result !== null) {
     const solid = result[0];
-    let faceNumber = 0;
 
+    let faceNumber = 0;
     let faceResult = patternFace.exec(solid);
+
     while (faceResult !== null) {
       const text = faceResult[0];
-
-      faceNumber++;
       const normalV: number[] = [];
       const verticesV: number[][] = [];
 
       let normalResult = patternNormal.exec(text);
+
+      faceNumber++;
+
       while (normalResult !== null) {
         normalV.push(parseFloat(normalResult[1]), parseFloat(normalResult[2]), parseFloat(normalResult[3]));
         normalResult = patternNormal.exec(text);
       }
 
       let vertexResult = patternVertex.exec(text);
+
       while (vertexResult !== null) {
         const verticesXYZ: number[] = [
           parseFloat(vertexResult[1]),
@@ -78,11 +80,13 @@ const parseASCII = (data: string): InitialObject[] => {
       };
 
       initialObjects.push(initialObject);
+
       faceResult = patternFace.exec(solid);
     }
 
     result = patternSolid.exec(data);
   }
+
   return initialObjects;
 };
 
@@ -91,8 +95,10 @@ const parseASCII = (data: string): InitialObject[] => {
  * @param {Array} initialObjects The data from the file
  * @returns HashTable of objects with the same vertex
  */
-const createHashTableWithObject = (initialObjects: InitialObject[]): HashTable<any, any> => {
-  const hashTable = new HashTable(initialObjects.length);
+const createHashTableWithObject = (
+  initialObjects: InitialObject[],
+): HashTable<number[], Partial<VertexUsageInfo & InitialObject>> => {
+  const hashTable = new HashTable<number[], Partial<VertexUsageInfo & InitialObject>>(initialObjects.length);
 
   for (let i = 0; i < initialObjects.length; i++) {
     for (let j = 0; j < initialObjects[i].vertices.length; j++) {
@@ -116,7 +122,11 @@ const createHashTableWithObject = (initialObjects: InitialObject[]): HashTable<a
  * @param {Number} offset The offset to move the mesh
  * @returns The new objects with the offset
  */
-const calcOffset = (hashTable: HashTable<any, any>, newObjects: InitialObject[], offset: number): InitialObject[] => {
+const calcOffset = (
+  hashTable: HashTable<number[], Partial<VertexUsageInfo & InitialObject>>,
+  newObjects: InitialObject[],
+  offset: number,
+): InitialObject[] => {
   for (let i = 0; i < hashTable.data.length; i++) {
     if (hashTable.data[i]) {
       for (let j = 0; j < hashTable.data[i].length; j++) {
@@ -131,7 +141,7 @@ const calcOffset = (hashTable: HashTable<any, any>, newObjects: InitialObject[],
 
         hashTable.data[i][j][1].forEach((list) => {
           newObjects.forEach((newObject) => {
-            if (newObject.face === list.face) {
+            if (newObject.face === list.face && list.vertexPositionInTheObject !== undefined) {
               newObject.vertices[list.vertexPositionInTheObject] = newPosition;
             }
           });
@@ -142,6 +152,7 @@ const calcOffset = (hashTable: HashTable<any, any>, newObjects: InitialObject[],
 
   newObjects.map((item) => {
     const newNormal = calculateNewNormal(item.vertices[0], item.vertices[1], item.vertices[2]);
+
     return {
       ...item,
       normal: item.normal.push(newNormal[0], newNormal[1], newNormal[2]),
@@ -156,16 +167,16 @@ const calcOffset = (hashTable: HashTable<any, any>, newObjects: InitialObject[],
  * @param {Array} tempList Array of objects with the same vertex
  * @returns The sum of all the normals
  */
-const calcNormalsSum = (tempList: VertexUsageInfo[]): number[] => {
+const calcNormalsSum = (tempList: Partial<VertexUsageInfo & InitialObject>[]): [number, number, number] => {
   // const result = tempList.reduce((prev, curr) => prev + curr.normal, 0);
   let sumX = 0;
   let sumY = 0;
   let sumZ = 0;
 
   tempList.forEach((item) => {
-    sumX += item.normal[0];
-    sumY += item.normal[1];
-    sumZ += item.normal[2];
+    sumX += item.normal ? item.normal[0] : 0;
+    sumY += item.normal ? item.normal[1] : 0;
+    sumZ += item.normal ? item.normal[2] : 0;
   });
 
   return [sumX, sumY, sumZ];
