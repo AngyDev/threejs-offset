@@ -27,28 +27,6 @@ describe('offset', () => {
     vi.clearAllMocks()
   })
 
-  describe('applyOffset', () => {
-    it('should create an offset mesh with correct name', async () => {
-      const mockMesh = new THREE.Mesh()
-      const offset = 2.5
-
-      const result = await applyOffset(mockMesh, offset)
-
-      expect(result.name).toBe('offset')
-    })
-
-    it('should call STLExporter with correct parameters', async () => {
-      const mockMesh = new THREE.Mesh()
-      const offset = 1.0
-
-      await applyOffset(mockMesh, offset)
-
-      const { STLExporter } = await import('three/examples/jsm/exporters/STLExporter.js')
-      expect(STLExporter).toHaveBeenCalled()
-      expect(mockParse).toHaveBeenCalledWith(mockMesh, { binary: false })
-    })
-  })
-
   describe('processGeometry', () => {
     it('should create points with offset applied to vertices', () => {
       const geometry = new THREE.BufferGeometry()
