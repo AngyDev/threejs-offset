@@ -1,11 +1,12 @@
 import path from "node:path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
-import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig(({ command, mode }) => {
   const baseConfig = {
-    plugins: [tsconfigPaths()],
+    resolve: {
+      tsconfigPaths: true,
+    },
     test: {
       root: "./src",
     },
@@ -32,7 +33,6 @@ export default defineConfig(({ command, mode }) => {
   return {
     ...baseConfig,
     plugins: [
-      ...baseConfig.plugins,
       dts({
         insertTypesEntry: true,
         rollupTypes: true,

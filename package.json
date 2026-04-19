@@ -46,15 +46,14 @@
     "node": ">=25"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.7",
-    "@types/node": "^24.9.1",
-    "@types/three": "^0.180.0",
-    "three": "^0.180.0",
+    "@biomejs/biome": "2.4.8",
+    "@types/node": "^25.5.0",
+    "@types/three": "^0.183.1",
+    "three": "^0.183.2",
     "typescript": "^5.9.3",
-    "vite": "^7.1.12",
+    "vite": "^8.0.1",
     "vite-plugin-dts": "^4.5.4",
-    "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^4.0.2"
+    "vitest": "^4.1.0"
   },
   "peerDependencies": {
     "three": "^0.143.0"
